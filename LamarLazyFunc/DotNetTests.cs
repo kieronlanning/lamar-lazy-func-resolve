@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using Lamar;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -7,7 +6,7 @@ using System;
 namespace LamarLazyFunc
 {
 	[TestClass]
-	public class LamarTests
+	public class DotNetTests
 	{
 		[TestMethod]
 		[DataTestMethod]
@@ -17,12 +16,12 @@ namespace LamarLazyFunc
 		public void Resolve_GivenLazyRegisteredService_ResolvesAsExpected(ServiceLifetime lifetime)
 		{
 			// Arrange
-			IServiceCollection serviceCollection = new ServiceRegistry();
+			IServiceCollection serviceCollection = new ServiceCollection();
 
 			serviceCollection.Add(new ServiceDescriptor(typeof(Service), typeof(Service), lifetime));
 			serviceCollection.Add(new ServiceDescriptor(typeof(ServiceWithLazy), typeof(ServiceWithLazy), lifetime));
 
-			IServiceProvider serviceProvider = new Container(serviceCollection);
+			IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider(true);
 			using (IServiceScope scope = serviceProvider.CreateScope())
 			{
 				// Act
@@ -43,12 +42,12 @@ namespace LamarLazyFunc
 		public void Resolve_GivenFuncRegisteredService_ResolvesAsExpected(ServiceLifetime lifetime)
 		{
 			// Arrange
-			IServiceCollection serviceCollection = new ServiceRegistry();
+			IServiceCollection serviceCollection = new ServiceCollection();
 
 			serviceCollection.Add(new ServiceDescriptor(typeof(Service), typeof(Service), lifetime));
 			serviceCollection.Add(new ServiceDescriptor(typeof(ServiceWithFunc), typeof(ServiceWithFunc), lifetime));
 
-			IServiceProvider serviceProvider = new Container(serviceCollection);
+			IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider(true);
 			using (IServiceScope scope = serviceProvider.CreateScope())
 			{
 				// Act
@@ -69,11 +68,11 @@ namespace LamarLazyFunc
 		public void Resolve_GivenRegisteredService_ResolvesAsExpected(ServiceLifetime lifetime)
 		{
 			// Arrange
-			IServiceCollection serviceCollection = new ServiceRegistry();
+			IServiceCollection serviceCollection = new ServiceCollection();
 
 			serviceCollection.Add(new ServiceDescriptor(typeof(Service), typeof(Service), lifetime));
 
-			IServiceProvider serviceProvider = new Container(serviceCollection);
+			IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider(true);
 			using (IServiceScope scope = serviceProvider.CreateScope())
 			{
 				// Act
